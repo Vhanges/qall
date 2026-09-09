@@ -1,0 +1,304 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Primary Blue */
+  --color-blue-900: #021A42;
+  --color-blue-800: #042D70;
+  --color-blue-700: #152B51;
+  --color-blue-600: #1A3A6E;
+  --color-blue-500: #2A5298;
+  --color-blue-400: #4A7BD4;
+  --color-blue-300: #7BA3E8;
+
+  /* Accent Orange */
+  --color-orange-500: #F88C00;
+  --color-orange-400: #F8A030;
+  --color-orange-300: #F8B85A;
+  --color-orange-200: #FCD49A;
+
+  /* Neutrals */
+  --color-dark-950: #060810;
+  --color-dark-900: #0A0E17;
+  --color-dark-800: #111827;
+  --color-dark-700: #1F2937;
+  --color-dark-600: #374151;
+  --color-dark-500: #4B5563;
+  --color-dark-400: #6B7280;
+  --color-dark-300: #9CA3AF;
+  --color-dark-200: #D1D5DB;
+  --color-dark-100: #E5E7EB;
+  --color-dark-50: #F9FAFB;
+
+  /* Fonts */
+  --font-heading: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+body {
+  background-color: var(--color-dark-900);
+  color: var(--color-dark-50);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Smooth scroll wrapper for Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* GSAP pin spacers — prevent transparent gaps between pinned sections */
+.pin-spacer {
+  background-color: var(--color-dark-900) !important;
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(248, 140, 0, 0.3);
+  color: var(--color-dark-50);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-dark-900);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-blue-700);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-blue-600);
+}
+
+/* Glass morphism utility */
+.glass {
+  background: rgba(10, 14, 23, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Glow effects */
+.glow-orange {
+  box-shadow: 0 0 20px rgba(248, 140, 0, 0.15),
+    0 0 60px rgba(248, 140, 0, 0.05);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(4, 45, 112, 0.3),
+    0 0 60px rgba(4, 45, 112, 0.1);
+}
+
+.text-gradient-orange {
+  background: linear-gradient(135deg, #F88C00 0%, #F8B85A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-blue {
+  background: linear-gradient(135deg, #4A7BD4 0%, #7BA3E8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gradient-hero {
+  background: linear-gradient(180deg, #0A0E17 0%, #042D70 50%, #021A42 100%);
+}
+
+.bg-gradient-cta {
+  background: linear-gradient(135deg, #F88C00 0%, #F8A030 50%, #F8B85A 100%);
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(180deg, #0A0E17 0%, #111827 100%);
+}
+
+.bg-gradient-section {
+  background: linear-gradient(180deg, #091c32 0%, #0A0E17 100%);
+}
+
+/* Scroll-snap — applied to html when snap page is active */
+html.snap-active,
+html.snap-active body {
+  scroll-snap-type: y proximity;
+}
+html.snap-active .snap-section {
+  scroll-snap-align: start;
+}
+
+/* Grid pattern background */
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Starfield animations */
+@keyframes twinkle {
+  0%, 100% { opacity: var(--tw-opacity, 0.15); transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+@keyframes shootingStar {
+  0% { opacity: 0; transform: rotate(var(--angle, 25deg)) translateX(0); }
+  5% { opacity: 1; }
+  70% { opacity: 0.6; }
+  100% { opacity: 0; transform: rotate(var(--angle, 25deg)) translateX(300px); }
+}
+
+/* Wire drawing glow */
+.wire-glow {
+  filter: drop-shadow(0 0 6px rgba(248, 140, 0, 0.6))
+          drop-shadow(0 0 12px rgba(248, 140, 0, 0.3));
+}
+
+/* ─── Card widget auto-animations ─── */
+/* All animations are paused by default and only play inside .animate-active */
+
+@keyframes bar-grow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+.animate-bar-grow {
+  transform-origin: bottom;
+  animation: bar-grow 0.6s ease-out both paused;
+}
+
+@keyframes check-draw {
+  from { stroke-dashoffset: 20; }
+  to { stroke-dashoffset: 0; }
+}
+.animate-check-draw path {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  animation: check-draw 0.5s ease-out both paused;
+}
+
+@keyframes ring-fill {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+.animate-ring-fill {
+  animation: ring-fill 1s ease-out both paused;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 4px currentColor, 0 0 8px currentColor; opacity: 1; }
+  50% { box-shadow: 0 0 8px currentColor, 0 0 16px currentColor; opacity: 0.8; }
+}
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite paused;
+}
+
+@keyframes item-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-item-fade-in {
+  animation: item-fade-in 0.4s ease-out both paused;
+}
+
+@keyframes shimmer {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 30%, rgba(248,140,0,0.15) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite paused;
+}
+
+/* When .animate-active is on a parent, unpause all child animations */
+.animate-active .animate-bar-grow,
+.animate-active .animate-check-draw path,
+.animate-active .animate-ring-fill,
+.animate-active .animate-glow-pulse,
+.animate-active .animate-item-fade-in,
+.animate-active .animate-shimmer {
+  animation-play-state: running;
+}
+/* Also handle when .animate-active is directly on the element */
+.animate-active.animate-bar-grow,
+.animate-active.animate-check-draw path,
+.animate-active.animate-ring-fill,
+.animate-active.animate-glow-pulse,
+.animate-active.animate-item-fade-in,
+.animate-active.animate-shimmer {
+  animation-play-state: running;
+}
+
+/* Mobile: force GSAP-animated sections visible (overrides inline styles from GSAP) */
+@media (max-width: 767px) {
+  .ii-stats, .ii-stat-item, .ii-divider, .ii-heading, .ii-body,
+  .pf-number, .pf-subtitle, .pf-title, .pf-desc, .pf-highlights, .pf-graphic,
+  .dr-heading, .dr-stats, .dr-chart {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes heroFloat {
+  0%, 100% { translate: -50% -50%; }
+  50% { translate: -50% calc(-50% - 14px); }
+}
+
+@keyframes orbSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

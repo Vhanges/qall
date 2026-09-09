@@ -1,0 +1,69 @@
+# Qall Website Deployment Guide
+
+This repository contains the source code for the **Qall** website built with Next.js 16 (App Router), React 19, and Tailwind CSS.
+
+---
+
+## 🚀 Quick Start / Deployment Options
+
+### Option 1: Managed Hosting (Vercel / Netlify / Render) — *Recommended*
+
+1. Connect this repository or upload the package to **Vercel**, **Netlify**, or **Render**.
+2. Configure the **Environment Variables** in your deployment dashboard:
+   - `OPENAI_API_KEY` — Your OpenAI API Key (used for the AI Chat Assistant at `/api/chat`).
+   - `RESEND_API_KEY` — Your Resend API Key (used for sending contact form emails at `/api/contact`).
+   - `BUSINESS_EMAIL` — Destination address for incoming contact messages (e.g. `team@qall.co.uk`).
+   - `FROM_EMAIL` — Verified sender domain email in Resend (e.g. `noreply@qall.co.uk`).
+   - `NEXT_PUBLIC_CAL_LINK` — Cal.com event link handle (e.g. `tom-xalnfw/demo`).
+3. Deploy! Next.js will build and deploy the frontend assets and serverless API endpoints automatically.
+
+---
+
+### Option 2: Self-Hosted Linux Server (Nginx + PM2)
+
+If deploying to an Ubuntu/Debian Linux VPS:
+
+#### 1. Prerequisites
+- **Node.js**: v18.17.0 or v20.x+
+- **Nginx** & **PM2** installed globally (`npm install -g pm2`)
+
+#### 2. Setup & Environment
+```bash
+cd /var/www/qall
+npm install
+```
+Create a `.env.local` file from `.env.example`:
+```bash
+cp .env.example .env.local
+```
+Fill in the live values for `OPENAI_API_KEY`, `RESEND_API_KEY`, and `NEXT_PUBLIC_CAL_LINK`.
+
+#### 3. Build & Run with PM2
+```bash
+npm run build
+pm2 start ecosystem.config.js
+pm2 save
+```
+
+#### 4. Nginx Reverse Proxy
+An Nginx configuration is provided in `nginx/qall.conf`.
+Copy it to `/etc/nginx/sites-available/qall.conf`, set up SSL with Certbot, and reload Nginx:
+```bash
+sudo cp nginx/qall.conf /etc/nginx/sites-available/qall.conf
+sudo ln -s /etc/nginx/sites-available/qall.conf /etc/nginx/sites-enabled/
+sudo certbot --nginx -d qall.co.uk -d www.qall.co.uk
+sudo systemctl reload nginx
+```
+
+---
+
+## 🛠 Features & Backend API Endpoints
+
+- **Cal.com Booking Embed**: Powered by `@calcom/embed-react` on client side. Uses `NEXT_PUBLIC_CAL_LINK`.
+- **AI Chat Assistant**: API handler at `/api/chat` using `@ai-sdk/openai` (`gpt-4.1-nano`).
+- **Contact Form**: API handler at `/api/contact` using `resend` to send notifications and user confirmation emails.
+
+---
+
+## 📦 Package Summary
+This package has been cleaned of temporary development scripts, video renders, and unneeded assets.

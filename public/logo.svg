@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 80" fill="none">
+  <!-- Curved bracket — vertical left + curve + horizontal extending past last bar -->
+  <path
+    d="M8 4 L8 58 Q8 72 22 72 L82 72"
+    stroke="#F88C00"
+    stroke-width="8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
+  <!-- Bar 1 (medium) -->
+  <rect x="26" y="14" width="8" height="34" rx="4" fill="#F88C00"/>
+  <!-- Bar 2 (tallest) -->
+  <rect x="46" y="6" width="8" height="42" rx="4" fill="#F88C00"/>
+  <!-- Bar 3 (shortest) -->
+  <rect x="66" y="24" width="8" height="24" rx="4" fill="#F88C00"/>
+  <!-- Text "Qall" -->
+  <text x="96" y="58" font-family="Space Grotesk, sans-serif" font-size="48" font-weight="700" fill="#F9FAFB">Qall</text>
+</svg>
