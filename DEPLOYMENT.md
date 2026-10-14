@@ -60,7 +60,7 @@ sudo systemctl reload nginx
 ## 🛠 Features & Backend API Endpoints
 
 - **Cal.com Booking Embed**: Powered by `@calcom/embed-react` on client side. Uses `NEXT_PUBLIC_CAL_LINK`.
-- **AI Chat Assistant**: API handler at `/api/chat` proxies to an n8n workflow via `N8N_WEBHOOK_URL`. The wire contract is `POST { sessionId, message }` → `{ "response": string }`. The n8n workflow owns all AI logic (system prompt, LLM call, conversation memory keyed by sessionId). `OPENAI_API_KEY` is no longer needed by this application.
+- **AI Chat Assistant**: API handler at `/api/chat` proxies to an n8n workflow via `N8N_WEBHOOK_URL`. The wire contract is `POST { sessionId, message }` → `{ "response": string }`. The n8n workflow owns all AI logic (LLM call, conversation memory keyed by sessionId). **The chatbot system prompt lives only in the n8n `qall-marketing` workflow — edit it there; there is no copy in this repo.** `OPENAI_API_KEY` is no longer needed by this application.
 - **Contact Form**: API handler at `/api/contact` using `resend` to send notifications and user confirmation emails.
 
 ---
