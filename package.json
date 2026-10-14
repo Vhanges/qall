@@ -11,7 +11,6 @@
     "video:render": "remotion render remotion/index.ts Main out/video.mp4"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^3.0.29",
     "@ai-sdk/react": "^3.0.88",
     "@calcom/embed-react": "^1.5.3",
     "@gsap/react": "^2.1.2",

@@ -10,7 +10,7 @@ This repository contains the source code for the **Qall** website built with Nex
 
 1. Connect this repository or upload the package to **Vercel**, **Netlify**, or **Render**.
 2. Configure the **Environment Variables** in your deployment dashboard:
-   - `OPENAI_API_KEY` — Your OpenAI API Key (used for the AI Chat Assistant at `/api/chat`).
+   - `N8N_WEBHOOK_URL` — Your n8n webhook URL for the chat assistant (e.g. `https://n8n.yourdomain.com/webhook/qall-marketing`). The chat widget now proxies through an n8n workflow instead of calling OpenAI directly.
    - `RESEND_API_KEY` — Your Resend API Key (used for sending contact form emails at `/api/contact`).
    - `BUSINESS_EMAIL` — Destination address for incoming contact messages (e.g. `team@qall.co.uk`).
    - `FROM_EMAIL` — Verified sender domain email in Resend (e.g. `noreply@qall.co.uk`).
@@ -36,7 +36,7 @@ Create a `.env.local` file from `.env.example`:
 ```bash
 cp .env.example .env.local
 ```
-Fill in the live values for `OPENAI_API_KEY`, `RESEND_API_KEY`, and `NEXT_PUBLIC_CAL_LINK`.
+Fill in the live values for `N8N_WEBHOOK_URL`, `RESEND_API_KEY`, and `NEXT_PUBLIC_CAL_LINK`.
 
 #### 3. Build & Run with PM2
 ```bash
@@ -60,7 +60,7 @@ sudo systemctl reload nginx
 ## 🛠 Features & Backend API Endpoints
 
 - **Cal.com Booking Embed**: Powered by `@calcom/embed-react` on client side. Uses `NEXT_PUBLIC_CAL_LINK`.
-- **AI Chat Assistant**: API handler at `/api/chat` using `@ai-sdk/openai` (`gpt-4.1-nano`).
+- **AI Chat Assistant**: API handler at `/api/chat` proxies to an n8n workflow via `N8N_WEBHOOK_URL`. The wire contract is `POST { sessionId, message }` → `{ "response": string }`. The n8n workflow owns all AI logic (system prompt, LLM call, conversation memory keyed by sessionId). `OPENAI_API_KEY` is no longer needed by this application.
 - **Contact Form**: API handler at `/api/contact` using `resend` to send notifications and user confirmation emails.
 
 ---

@@ -149,11 +149,3 @@ export function filterOutput(text: string): string {
   }
   return text;
 }
-
-/**
- * Trim conversation to the last N messages to cap token usage
- */
-export function trimConversation<T>(messages: T[], maxMessages: number = 10): T[] {
-  if (messages.length <= maxMessages) return messages;
-  return messages.slice(-maxMessages);
-}

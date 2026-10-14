@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, type FormEvent } from "react";
 import { useChat } from "@ai-sdk/react";
+import { chatTransport } from "@/lib/ai";
 
 function getMessageText(message: { parts: Array<{ type: string; text?: string }> }): string {
   const text = message.parts
@@ -19,9 +20,6 @@ function getMessageText(message: { parts: Array<{ type: string; text?: string }>
 
 function getFriendlyError(error: Error): string {
   const msg = error.message || "";
-  if (msg.includes("insufficient_quota")) {
-    return "The assistant is temporarily unavailable. Please try again later or contact us at team@qall.co.uk.";
-  }
   if (msg.includes("rate_limit") || msg.includes("429")) {
     return "Too many requests. Please wait a moment and try again.";
   }
@@ -34,7 +32,7 @@ export default function ChatWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { messages, sendMessage, status, error } = useChat();
+  const { messages, sendMessage, status, error } = useChat({ transport: chatTransport });
 
   const isBusy = status === "submitted" || status === "streaming";
 
