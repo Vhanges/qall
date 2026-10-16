@@ -195,14 +195,12 @@ export default function PrivacyPage() {
             <strong className="text-dark-200">Service Providers:</strong> We use a
             limited number of third-party providers to operate our website and the
             Platform, each bound by contractual data protection obligations. Depending
-            on the features you use, these include Amazon Web Services, Inc. (file
-            storage and backups), Oracle Corporation (object storage and
-            speech-to-text), Microsoft Corporation (email), Pusher Channels, Inc.
-            (real-time updates), ClickSend (SMS delivery), 8x8, Inc. (voice calling),
-            Meta Platforms, Inc. (WhatsApp Business messaging), and a hosting provider
-            for caching and background processing. We maintain a current list of our
-            service providers, available on request, and will notify you of material
-            changes.
+            on the features you use, these include Oracle Corporation (object storage
+            and speech-to-text), Microsoft Corporation (email delivery), 8x8, Inc.
+            (voice calling and call recording), ClickSend (SMS delivery), Meta
+            Platforms, Inc. (WhatsApp Business messaging), and Amazon Web Services,
+            Inc. (backup storage). We maintain a current list of our service
+            providers, available on request, and will notify you of material changes.
           </li>
           <li>
             <strong className="text-dark-200">Insurance Partners:</strong> Where required to
