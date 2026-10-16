@@ -6,6 +6,23 @@ const WEBHOOK_URL =
   process.env.N8N_WEBHOOK_URL ??
   "http://localhost:5678/webhook/qall";
 
+/**
+ * Shared secret for the n8n webhook, sent server-side only.
+ *
+ * The n8n `QALL Webhook` node uses Header Auth. This value must match that
+ * credential's value exactly. Never expose it to the browser: there is no
+ * `NEXT_PUBLIC_` prefix here, so it stays inside the server runtime and the
+ * public `/api/chat` route remains the only caller of n8n.
+ */
+const WEBHOOK_AUTH_HEADER = "X-QALL-Key";
+const WEBHOOK_API_KEY = process.env.QALL_WEBHOOK_API_KEY;
+
+if (!WEBHOOK_API_KEY) {
+  console.warn(
+    "[qall] QALL_WEBHOOK_API_KEY is not set; n8n requests will be sent unauthenticated."
+  );
+}
+
 const REQUEST_TIMEOUT_MS = 60_000;
 
 const CHUNK_DELAY_MS = 14;
@@ -46,6 +63,64 @@ function errorResponse(message: string, status: number) {
     status,
     headers: { "Content-Type": "application/json" },
   });
+}
+
+const CONTACT_LINE = "contact us at team@qall.co.uk";
+
+/**
+ * Curated, visitor-facing copy for upstream failures. Status codes and n8n
+ * internals must never reach a visitor — see N8N_INTEGRATION.md mismatch #5.
+ */
+function friendlyErrorForStatus(status: number): string {
+  if (status === 400 || status === 422) {
+    return "I wasn't able to understand that request. Could you rephrase your question about QALL?";
+  }
+  if (status === 401 || status === 403) {
+    return `The assistant is temporarily unavailable while it's being set up. Please try again in a few minutes, or ${CONTACT_LINE}.`;
+  }
+  if (status === 404) {
+    return `The assistant isn't available at the moment. Please try again shortly, or ${CONTACT_LINE}.`;
+  }
+  if (status === 413) {
+    return "That message is a little too long for me. Could you shorten it and try again?";
+  }
+  if (status === 408 || status === 504) {
+    return "The assistant is taking a little longer than usual to answer. Please try again in a moment.";
+  }
+  if (status === 429) {
+    return "You're sending messages a little too quickly. Please wait a moment before trying again.";
+  }
+  if (status >= 500) {
+    return `Sorry — the assistant is having trouble answering right now. Please try again in a moment, or ${CONTACT_LINE}.`;
+  }
+  return `Sorry, I couldn't get an answer just now. Please try again shortly, or ${CONTACT_LINE}.`;
+}
+
+const MAX_UPSTREAM_MESSAGE_LENGTH = 300;
+
+/**
+ * n8n's authored error branches return `{ response, error: true }` carrying
+ * human-written copy, which beats anything we would invent. Anything else it
+ * returns on an error — plain-text infrastructure strings such as
+ * "Authorization data is wrong!", HTML, or a serialised error object — is
+ * rejected, so only the documented `{ response }` shape is ever shown.
+ */
+function getSafeUpstreamMessage(json: unknown): string {
+  // Deliberately no raw-body fallback: a non-JSON body is n8n plumbing, not copy.
+  const text = getReplyText(json).trim();
+
+  if (!text || text.length > MAX_UPSTREAM_MESSAGE_LENGTH) return "";
+  if (/^\s*[[{<]/.test(text)) return ""; // serialised JSON or HTML
+  if (/\n\s*at\s/.test(text)) return ""; // stack trace frames
+  if (
+    /\b(stack ?trace|credential|authorization|unauthorized|forbidden|ECONNREFUSED|ENOTFOUND|ECONNRESET|ETIMEDOUT|fetch failed|undefined|null|Exception|node id|webhook)\b/i.test(
+      text,
+    )
+  ) {
+    return "";
+  }
+
+  return text;
 }
 
 function planChunkSize(length: number): number {
@@ -114,14 +189,15 @@ export async function POST(req: Request) {
   try {
     const response = await fetch(WEBHOOK_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(WEBHOOK_API_KEY
+          ? { [WEBHOOK_AUTH_HEADER]: WEBHOOK_API_KEY }
+          : {}),
+      },
       body: JSON.stringify({ sessionId, message: userMessage }),
       signal: controller.signal,
     });
-
-    if (!response.ok) {
-      throw new Error(`Webhook responded with ${response.status}`);
-    }
 
     const text = await response.text();
     let json: unknown = text;
@@ -131,31 +207,39 @@ export async function POST(req: Request) {
       // keep raw text
     }
 
-    replyText = getReplyText(json);
+    if (!response.ok) {
+      // Prefer n8n's own human-written copy; fall back to ours. Either way the
+      // visitor never sees the status code or the raw body.
+      const upstream = getSafeUpstreamMessage(json);
+      replyText = upstream || friendlyErrorForStatus(response.status);
+      console.error(
+        `[qall] n8n responded ${response.status}${upstream ? " (used upstream copy)" : " (used fallback copy)"}`
+      );
+    } else {
+      replyText = getReplyText(json);
 
-    if (!replyText.trim()) {
-      throw new Error("The assistant returned an empty response");
+      if (!replyText.trim()) {
+        throw new Error("The assistant returned an empty response");
+      }
     }
   } catch (error) {
     const isAbort = error instanceof Error && error.name === "AbortError";
     const isEmptyReply =
-      error instanceof Error && error.message === "The assistant returned an empty response";
+      error instanceof Error &&
+      error.message === "The assistant returned an empty response";
 
     console.error("[qall] n8n request failed:", error);
 
-    if (isEmptyReply) {
+    if (isAbort) {
+      replyText =
+        "The assistant is taking a little longer than usual to answer. Please try again in a moment.";
+    } else if (isEmptyReply) {
       replyText =
         "Sorry, the assistant couldn't complete that request. Please try again in a moment.";
     } else {
-      const reason = isAbort
-        ? "the assistant took too long to respond"
-        : error instanceof Error
-          ? error.message
-          : "Unknown error";
-
-      replyText =
-        `Sorry, I couldn't reach the assistant right now. (${reason})\n\n` +
-        `Please try again shortly or contact us at team@qall.co.uk.`;
+      // Deliberately opaque: error.message here is Node internals ("fetch
+      // failed", socket errors) and must never reach a visitor.
+      replyText = `Sorry, I couldn't reach the assistant right now. Please try again shortly, or ${CONTACT_LINE}.`;
     }
   } finally {
     clearTimeout(timeout);
