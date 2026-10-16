@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <LegalPage title="Privacy Policy" lastUpdated="15 February 2026">
+    <LegalPage title="Privacy Policy" lastUpdated="16 October 2026">
       <section>
         <h2 className="font-heading font-semibold text-xl text-dark-100 mb-3">
           1. Introduction
@@ -53,12 +53,17 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong className="text-dark-200">Billing Information:</strong> Payment card details,
-            billing address, and VAT number (processed securely via our PCI-compliant
-            payment processor)
+            billing address, and VAT number (processed securely via our payment
+            processor)
           </li>
           <li>
             <strong className="text-dark-200">Communication Data:</strong> Records of correspondence
             when you contact our support team, participate in surveys, or provide feedback
+          </li>
+          <li>
+            <strong className="text-dark-200">AI Assistant Data:</strong> Messages you submit to
+            the AI assistant on our website, together with the session identifier and IP
+            address used to process your request
           </li>
         </ul>
 
@@ -67,8 +72,8 @@ export default function PrivacyPage() {
         </h3>
         <ul className="list-disc pl-6 space-y-2">
           <li>
-            <strong className="text-dark-200">Usage Data:</strong> Pages visited, features used,
-            session duration, click patterns, and navigation paths within the Platform
+            <strong className="text-dark-200">Usage Data:</strong> Pages requested and features used
+            within the Platform, as recorded in our server logs
           </li>
           <li>
             <strong className="text-dark-200">Device Information:</strong> Browser type, operating
@@ -113,6 +118,11 @@ export default function PrivacyPage() {
             analytics, and advisor management tools
           </li>
           <li>
+            <strong className="text-dark-200">AI Assistant:</strong> To respond to questions
+            you submit to the AI assistant on our website and to maintain the context of
+            that conversation
+          </li>
+          <li>
             <strong className="text-dark-200">Account Management:</strong> To create and manage
             your account, process subscriptions, and handle billing
           </li>
@@ -122,9 +132,8 @@ export default function PrivacyPage() {
             updates
           </li>
           <li>
-            <strong className="text-dark-200">Analytics and Improvement:</strong> To understand
-            how the Platform is used, identify trends, and improve functionality and
-            user experience
+            <strong className="text-dark-200">Service Improvement:</strong> To understand
+            how the Platform is used and to improve functionality and user experience
           </li>
           <li>
             <strong className="text-dark-200">Security:</strong> To detect, prevent, and address
@@ -132,7 +141,8 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong className="text-dark-200">Legal Compliance:</strong> To comply with applicable
-            laws, regulations, and legal processes, including FCA regulatory requirements
+            laws, regulations, and legal processes, including any requirements that apply to our
+            clients&apos; regulated activities
           </li>
           <li>
             <strong className="text-dark-200">Marketing:</strong> To send promotional communications
@@ -182,10 +192,17 @@ export default function PrivacyPage() {
         </p>
         <ul className="list-disc pl-6 mt-3 space-y-2">
           <li>
-            <strong className="text-dark-200">Service Providers:</strong> Trusted third-party
-            providers who assist with hosting (AWS, UK region), payment processing,
-            email delivery, analytics, and customer support — all bound by contractual
-            data protection obligations
+            <strong className="text-dark-200">Service Providers:</strong> We use a
+            limited number of third-party providers to operate our website and the
+            Platform, each bound by contractual data protection obligations. Depending
+            on the features you use, these include Amazon Web Services, Inc. (file
+            storage and backups), Oracle Corporation (object storage and
+            speech-to-text), Microsoft Corporation (email), Pusher Channels, Inc.
+            (real-time updates), ClickSend (SMS delivery), 8x8, Inc. (voice calling),
+            Meta Platforms, Inc. (WhatsApp Business messaging), and a hosting provider
+            for caching and background processing. We maintain a current list of our
+            service providers, available on request, and will notify you of material
+            changes.
           </li>
           <li>
             <strong className="text-dark-200">Insurance Partners:</strong> Where required to
@@ -252,7 +269,13 @@ export default function PrivacyPage() {
             from the date of submission
           </li>
           <li>
-            <strong className="text-dark-200">Usage and Analytics Data:</strong> Retained in
+            <strong className="text-dark-200">AI Assistant Conversations:</strong> Messages
+            you submit to the AI assistant on our website, together with the associated
+            session identifier and IP address, are used to generate responses. Contact
+            privacy@theqall.com for the current retention period for this data.
+          </li>
+          <li>
+            <strong className="text-dark-200">Usage and Log Data:</strong> Retained in
             anonymised form for up to 36 months
           </li>
         </ul>
@@ -263,8 +286,9 @@ export default function PrivacyPage() {
           8. Cookie Policy
         </h2>
         <p>
-          We use cookies and similar tracking technologies to enhance your experience.
-          The categories of cookies we use are:
+          We use cookies and similar technologies to keep the Platform secure and
+          working. We do not use advertising or cross-site tracking cookies. The
+          categories we use are:
         </p>
         <ul className="list-disc pl-6 mt-3 space-y-2">
           <li>
@@ -273,18 +297,15 @@ export default function PrivacyPage() {
             security cookies. These cannot be disabled.
           </li>
           <li>
-            <strong className="text-dark-200">Performance and Analytics:</strong> Help us understand
-            how visitors interact with our website and Platform, enabling us to improve
-            functionality and user experience.
-          </li>
-          <li>
             <strong className="text-dark-200">Functional:</strong> Enable enhanced functionality
             and personalisation, such as remembering your preferences and settings.
           </li>
           <li>
-            <strong className="text-dark-200">Marketing:</strong> Used to deliver relevant
-            advertisements and measure the effectiveness of marketing campaigns. These
-            are only set with your consent.
+            <strong className="text-dark-200">Local Storage:</strong> Our website stores a
+            session identifier under the key <code>qall.chat.sessionId</code> in your
+            browser&apos;s local storage. This is used to keep the AI assistant
+            conversation continuous. It contains no personal information itself and
+            remains on your device until you clear your browser storage.
           </li>
         </ul>
         <p className="mt-3">
@@ -347,13 +368,16 @@ export default function PrivacyPage() {
           personal data, including:
         </p>
         <ul className="list-disc pl-6 mt-3 space-y-2">
-          <li>AES-256 encryption for data at rest and TLS 1.3 for data in transit</li>
-          <li>Role-based access controls with multi-factor authentication</li>
-          <li>Regular vulnerability assessments and penetration testing</li>
-          <li>SOC 2 Type II compliance programme</li>
-          <li>Automated backup and disaster recovery procedures</li>
-          <li>Employee security awareness training and background checks</li>
-          <li>Incident response procedures with 72-hour breach notification capability</li>
+          <li>Encryption of data in transit using TLS for all website and Platform connections</li>
+          <li>Role-based access controls restricting access to data according to a user&apos;s role</li>
+          <li>Regular internal security reviews of our codebase, with findings tracked and remediated</li>
+          <li>Automated daily backups of Platform data, stored on local and cloud storage</li>
+          <li>Employee security awareness training</li>
+          <li>
+            A documented approach to notifying affected individuals and the Information
+            Commissioner&apos;s Office within 72 hours of becoming aware of a personal
+            data breach, where the threshold for notification is met
+          </li>
         </ul>
       </section>
 

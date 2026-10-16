@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <LegalPage title="Terms of Service" lastUpdated="15 February 2026">
+    <LegalPage title="Terms of Service" lastUpdated="16 October 2026">
       <section>
         <h2 className="font-heading font-semibold text-xl text-dark-100 mb-3">
           1. Agreement to Terms
@@ -66,8 +66,8 @@ export default function TermsPage() {
           with unauthorised third parties.
         </p>
         <p className="mt-3">
-          Qall employs industry-standard security measures including encryption at rest
-          and in transit, role-based access controls, and regular penetration testing.
+          Qall employs industry-standard security measures including encryption in
+          transit, role-based access controls, and regular internal security reviews.
           However, no method of electronic transmission or storage is 100% secure, and
           we cannot guarantee absolute security.
         </p>
