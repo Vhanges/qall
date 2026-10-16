@@ -123,7 +123,7 @@ export function ContactSection() {
                   label="Email Address"
                   name="email"
                   type="email"
-                  placeholder="john@company.com"
+                  placeholder="you@company.com"
                   value={formData.email}
                   onChange={handleChange}
                   error={errors.email}
