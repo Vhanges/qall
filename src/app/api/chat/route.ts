@@ -4,7 +4,7 @@ import { validateInput, checkRateLimit, filterOutput } from "@/lib/chat-security
 
 const WEBHOOK_URL =
   process.env.N8N_WEBHOOK_URL ??
-  "http://localhost:5678/webhook/qall-marketing";
+  "http://localhost:5678/webhook/qall";
 
 const REQUEST_TIMEOUT_MS = 60_000;
 

@@ -8,7 +8,7 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3000,
-        N8N_WEBHOOK_URL: "http://localhost:5678/webhook/qall-marketing",
+        N8N_WEBHOOK_URL: "http://localhost:5678/webhook/qall",
       },
       instances: 1,
       autorestart: true,

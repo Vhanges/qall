@@ -10,7 +10,7 @@ This repository contains the source code for the **Qall** website built with Nex
 
 1. Connect this repository or upload the package to **Vercel**, **Netlify**, or **Render**.
 2. Configure the **Environment Variables** in your deployment dashboard:
-   - `N8N_WEBHOOK_URL` — Your n8n webhook URL for the chat assistant (e.g. `https://n8n.yourdomain.com/webhook/qall-marketing`). The chat widget now proxies through an n8n workflow instead of calling OpenAI directly.
+   - `N8N_WEBHOOK_URL` — Your n8n webhook URL for the chat assistant (e.g. `https://n8n.yourdomain.com/webhook/qall`). The chat widget now proxies through an n8n workflow instead of calling OpenAI directly.
    - `RESEND_API_KEY` — Your Resend API Key (used for sending contact form emails at `/api/contact`).
    - `BUSINESS_EMAIL` — Destination address for incoming contact messages (e.g. `team@qall.co.uk`).
    - `FROM_EMAIL` — Verified sender domain email in Resend (e.g. `noreply@qall.co.uk`).
