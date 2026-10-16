@@ -39,12 +39,19 @@ export default function TermsPage() {
           and insurance distribution networks. The Platform includes, but is not limited to:
         </p>
         <ul className="list-disc pl-6 mt-3 space-y-2">
-          <li>Advisor performance tracking and benchmarking dashboards</li>
-          <li>Automated commission calculation, reconciliation, and audit trails</li>
-          <li>Lead capture, scoring, routing, and lifecycle management</li>
-          <li>Client portfolio management and engagement tools</li>
-          <li>Real-time revenue analytics and reporting</li>
-          <li>AI-powered insights and capacity optimisation tools</li>
+          <li>Secure, role-based access with digital identity verification during onboarding</li>
+          <li>Insurance provider and partner company management</li>
+          <li>Lead capture, assignment, and lifecycle tracking from initial contact through to completion</li>
+          <li>Client profiling through digital fact-find forms, and comparison of multiple insurance types in a single view</li>
+          <li>In-platform SMS and WhatsApp communication within the client record</li>
+          <li>Automated call recording and transcription linked to client records</li>
+          <li>Compliance review, advice approval, and submission workflows</li>
+          <li>Automated commission calculation, reconciliation, and discrepancy resolution</li>
+          <li>Billing, invoicing, and payment tracking</li>
+          <li>Performance analytics covering advisor performance, lead conversion rates, and revenue forecasting</li>
+          <li>Task organisation and scheduled management reporting</li>
+          <li>A client self-service portal for reviewing policies and uploading documents</li>
+          <li>Automated daily backups and secure cloud storage</li>
           <li>Integration with third-party insurance providers, carriers, and data sources</li>
         </ul>
       </section>
