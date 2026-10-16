@@ -125,7 +125,7 @@ export function checkRateLimit(ip: string): ValidationResult {
   if (entry.totalMessages >= 20) {
     return {
       valid: false,
-      error: "You've reached the conversation limit. Please contact us at team@qall.co.uk or book a demo for more help.",
+      error: "You've reached the conversation limit. Please contact us at team@theqall.com or book a demo for more help.",
     };
   }
 

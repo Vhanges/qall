@@ -65,7 +65,7 @@ function errorResponse(message: string, status: number) {
   });
 }
 
-const CONTACT_LINE = "contact us at team@qall.co.uk";
+const CONTACT_LINE = "contact us at team@theqall.com";
 
 /**
  * Curated, visitor-facing copy for upstream failures. Status codes and n8n

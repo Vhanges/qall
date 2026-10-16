@@ -12,8 +12,8 @@ This repository contains the source code for the **Qall** website built with Nex
 2. Configure the **Environment Variables** in your deployment dashboard:
    - `N8N_WEBHOOK_URL` — Your n8n webhook URL for the chat assistant (e.g. `https://n8n.yourdomain.com/webhook/qall`). The chat widget now proxies through an n8n workflow instead of calling OpenAI directly.
    - `RESEND_API_KEY` — Your Resend API Key (used for sending contact form emails at `/api/contact`).
-   - `BUSINESS_EMAIL` — Destination address for incoming contact messages (e.g. `team@qall.co.uk`).
-   - `FROM_EMAIL` — Verified sender domain email in Resend (e.g. `noreply@qall.co.uk`).
+   - `BUSINESS_EMAIL` — Destination address for incoming contact messages (e.g. `team@theqall.com`).
+   - `FROM_EMAIL` — Verified sender domain email in Resend (e.g. `noreply@theqall.com`).
    - `NEXT_PUBLIC_CAL_LINK` — Cal.com event link handle (e.g. `tom-xalnfw/demo`).
 3. Deploy! Next.js will build and deploy the frontend assets and serverless API endpoints automatically.
 
@@ -51,7 +51,7 @@ Copy it to `/etc/nginx/sites-available/qall.conf`, set up SSL with Certbot, and 
 ```bash
 sudo cp nginx/qall.conf /etc/nginx/sites-available/qall.conf
 sudo ln -s /etc/nginx/sites-available/qall.conf /etc/nginx/sites-enabled/
-sudo certbot --nginx -d qall.co.uk -d www.qall.co.uk
+sudo certbot --nginx -d theqall.com -d www.theqall.com
 sudo systemctl reload nginx
 ```
 

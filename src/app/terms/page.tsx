@@ -281,8 +281,8 @@ export default function TermsPage() {
         </p>
         <div className="mt-3 p-4 rounded-xl bg-white/5 border border-white/10">
           <p className="text-dark-200 font-medium">Qall Technologies Ltd</p>
-          <p className="mt-1">Email: legal@qall.ai</p>
-          <p>Website: www.qall.ai</p>
+          <p className="mt-1">Email: legal@theqall.com</p>
+          <p>Website: www.theqall.com</p>
         </div>
       </section>
     </LegalPage>

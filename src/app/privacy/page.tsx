@@ -18,7 +18,7 @@ export default function PrivacyPage() {
           Qall Technologies Ltd (&quot;Qall,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) is committed to
           protecting the privacy and security of your personal data. This Privacy Policy
           explains how we collect, use, disclose, and safeguard information when you
-          visit our website (www.qall.ai), use our cloud-based insurance CRM platform
+          visit our website (www.theqall.com), use our cloud-based insurance CRM platform
           (the &quot;Platform&quot;), or otherwise interact with us.
         </p>
         <p className="mt-3">
@@ -332,7 +332,7 @@ export default function PrivacyPage() {
           </li>
         </ul>
         <p className="mt-3">
-          To exercise any of these rights, please contact us at privacy@qall.ai. We will
+          To exercise any of these rights, please contact us at privacy@theqall.com. We will
           respond to your request within one month, as required by law. There is no fee
           for making a request unless it is manifestly unfounded or excessive.
         </p>
@@ -395,8 +395,8 @@ export default function PrivacyPage() {
         </p>
         <div className="mt-3 p-4 rounded-xl bg-white/5 border border-white/10 space-y-1">
           <p className="text-dark-200 font-medium">Qall Technologies Ltd — Data Protection</p>
-          <p>Email: privacy@qall.ai</p>
-          <p>Website: www.qall.ai</p>
+          <p>Email: privacy@theqall.com</p>
+          <p>Website: www.theqall.com</p>
         </div>
         <p className="mt-4">
           If you are not satisfied with our response, you have the right to lodge a

@@ -5,8 +5,8 @@ import { contactFormSchema } from "@/lib/validations";
 export async function POST(request: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const BUSINESS_EMAIL = process.env.BUSINESS_EMAIL || "team@qall.co.uk";
-    const FROM_EMAIL = process.env.FROM_EMAIL || "noreply@qall.co.uk";
+    const BUSINESS_EMAIL = process.env.BUSINESS_EMAIL || "team@theqall.com";
+    const FROM_EMAIL = process.env.FROM_EMAIL || "noreply@theqall.com";
     const body = await request.json();
 
     // Server-side validation
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
             </p>
             <p style="color: #374151; line-height: 1.6;">
               In the meantime, feel free to explore our
-              <a href="https://qall.co.uk/features" style="color: #F88C00;">platform features</a>
+              <a href="https://theqall.com/features" style="color: #F88C00;">platform features</a>
               to see how Qall can transform your brokerage.
             </p>
             <p style="color: #6B7280; font-size: 14px; margin-top: 30px;">

@@ -12,7 +12,7 @@ function getMessageText(message: { parts: Array<{ type: string; text?: string }>
 
   // Guard against raw API error JSON leaking into message content
   if (text.trimStart().startsWith('{"type":"error"')) {
-    return "Sorry, something went wrong. Please try again or contact us at team@qall.co.uk.";
+    return "Sorry, something went wrong. Please try again or contact us at team@theqall.com.";
   }
 
   return text;
