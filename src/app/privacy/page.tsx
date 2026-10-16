@@ -166,8 +166,8 @@ export default function PrivacyPage() {
           <li>
             <strong className="text-dark-200">Legitimate Interests (Article 6(1)(f)):</strong> Processing
             necessary for our legitimate interests, including improving our services,
-            ensuring Platform security, and conducting business analytics, where those
-            interests are not overridden by your rights
+            ensuring Platform security, and responding to enquiries submitted through
+            our AI assistant, where those interests are not overridden by your rights
           </li>
           <li>
             <strong className="text-dark-200">Consent (Article 6(1)(a)):</strong> Where you have
@@ -199,8 +199,10 @@ export default function PrivacyPage() {
             and speech-to-text), Microsoft Corporation (email delivery), 8x8, Inc.
             (voice calling and call recording), ClickSend (SMS delivery), Meta
             Platforms, Inc. (WhatsApp Business messaging), and Amazon Web Services,
-            Inc. (backup storage). We maintain a current list of our service
-            providers, available on request, and will notify you of material changes.
+            Inc. (backup storage). If you use the AI assistant on our website, a
+            third-party language model provider processes the content of the messages
+            you send it. We maintain a current list of our service providers, available
+            on request, and will notify you of material changes.
           </li>
           <li>
             <strong className="text-dark-200">Insurance Partners:</strong> Where required to
@@ -228,9 +230,9 @@ export default function PrivacyPage() {
           6. International Transfers
         </h2>
         <p>
-          Your data is primarily stored and processed within the United Kingdom. Where
-          we transfer personal data outside the UK, we ensure appropriate safeguards are
-          in place, including:
+          Some of our service providers process personal data outside the
+          United Kingdom. Where we transfer personal data outside the UK, we ensure
+          appropriate safeguards are in place, including:
         </p>
         <ul className="list-disc pl-6 mt-3 space-y-2">
           <li>UK adequacy regulations recognising the recipient country&apos;s data protection standards</li>
