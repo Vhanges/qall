@@ -66,7 +66,7 @@ function renderStyledText(text: string): ReactNode {
   const flushList = () => {
     if (listItems.length === 0) return;
     blocks.push(
-      <ul key={`list-${blocks.length}`} className="my-1 list-disc space-y-1 pl-5">
+      <ul key={`list-${blocks.length}`} className="my-2 list-disc space-y-1.5 pl-5 first:mt-0 last:mb-0">
         {listItems.map((item, index) => (
           <li key={`item-${index}`}>{renderInlineText(item, `item-${index}`)}</li>
         ))}
@@ -88,11 +88,11 @@ function renderStyledText(text: string): ReactNode {
     const heading = line.match(/^#{1,3}\s+(.+)$/);
     blocks.push(
       heading ? (
-        <strong key={`line-${index}`} className="mt-1 block font-semibold text-dark-50">
+        <strong key={`line-${index}`} className="mb-1.5 mt-2 block font-semibold text-dark-50 first:mt-0">
           {renderInlineText(heading[1], `line-${index}`)}
         </strong>
       ) : (
-        <p key={`line-${index}`} className="m-0">
+        <p key={`line-${index}`} className="my-1.5 first:mt-0 last:mb-0">
           {renderInlineText(line, `line-${index}`)}
         </p>
       ),
@@ -202,7 +202,7 @@ export default function ChatWidget() {
               </div>
               <div>
                 <h3 id="chat-title" className="text-sm font-semibold text-dark-50 font-heading">
-                  Chat with Chuck
+                  Chat with Qall AI
                 </h3>
                 <p className="text-xs text-white">
                   We typically reply instantly
@@ -232,7 +232,7 @@ export default function ChatWidget() {
 
           {/* Messages */}
           <div
-            className="flex-1 overflow-y-auto px-4 py-4 space-y-3"
+            className="flex-1 overflow-y-auto bg-black/10 px-4 py-5 space-y-4"
             data-lenis-prevent
             role="log"
             aria-live="polite"
@@ -245,8 +245,8 @@ export default function ChatWidget() {
                 <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-500/20">
                   <div className="h-1.5 w-1.5 rounded-full bg-orange-500" />
                 </div>
-                <div className="rounded-xl rounded-tl-sm bg-white/5 px-3.5 py-2.5 text-sm text-dark-200 leading-relaxed max-w-[85%]">
-                  Hi there! I&apos;m Chuck, the Qall assistant. I can help you
+                <div className="max-w-[90%] rounded-2xl rounded-tl-md border border-white/[0.06] bg-white/[0.07] px-4 py-3 text-[13px] leading-5 text-dark-200 shadow-sm">
+                  Hi there! I&apos;m Qall AI, the Qall assistant. I can help you
                   learn about our insurance brokerage CRM platform. What would
                   you like to know?
                 </div>
@@ -266,15 +266,17 @@ export default function ChatWidget() {
                   </div>
                 )}
                 <div
-                  className={`rounded-xl px-3.5 py-2.5 text-sm leading-relaxed max-w-[85%] ${
+                  className={`max-w-[88%] break-words rounded-2xl px-4 py-3 text-[13px] leading-5 shadow-sm ${
                     message.role === "user"
-                      ? "rounded-tr-sm bg-orange-500 text-white"
-                      : "rounded-tl-sm bg-white/5 text-dark-200"
+                      ? "rounded-tr-md bg-gradient-to-br from-orange-500 to-orange-600 text-white"
+                      : "rounded-tl-md border border-white/[0.06] bg-white/[0.07] text-dark-200"
                   }`}
                 >
-                  {message.role === "assistant"
-                    ? renderStyledText(getMessageText(message))
-                    : getMessageText(message)}
+                  <div className={message.role === "user" ? "whitespace-pre-wrap" : undefined}>
+                    {message.role === "assistant"
+                      ? renderStyledText(getMessageText(message))
+                      : getMessageText(message)}
+                  </div>
                 </div>
               </div>
             ))}
@@ -286,9 +288,9 @@ export default function ChatWidget() {
                   <div className="h-1.5 w-1.5 rounded-full bg-orange-500" />
                 </div>
                 <div
-                  className="rounded-xl rounded-tl-sm bg-white/5 px-3.5 py-2.5"
+                  className="rounded-2xl rounded-tl-md border border-white/[0.06] bg-white/[0.07] px-4 py-3 shadow-sm"
                   role="status"
-                  aria-label="Chuck is typing"
+                  aria-label="Qall AI is typing"
                 >
                   <div className="flex gap-1">
                     <span
@@ -312,7 +314,7 @@ export default function ChatWidget() {
                   <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
                 </div>
                 <div
-                  className="rounded-xl rounded-tl-sm bg-red-500/10 px-3.5 py-2.5 text-sm text-red-300 max-w-[85%]"
+                  className="max-w-[88%] rounded-2xl rounded-tl-md border border-red-400/20 bg-red-500/10 px-4 py-3 text-[13px] leading-5 text-red-300 shadow-sm"
                   role="alert"
                 >
                   {getFriendlyError(error)}
@@ -334,7 +336,7 @@ export default function ChatWidget() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about Qall..."
-                aria-label="Message for Chuck"
+                aria-label="Message for Qall AI"
                 maxLength={500}
                 disabled={isBusy}
                 className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-dark-50 placeholder:text-white outline-none transition-colors focus:border-orange-500/50 focus:bg-white/[0.07] disabled:opacity-50"
