@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect, type FormEvent, type ReactNode } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  type FormEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type ReactNode,
+} from "react";
 import { useChat } from "@ai-sdk/react";
 import { chatTransport } from "@/lib/ai";
 
@@ -107,7 +114,7 @@ export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const openButtonRef = useRef<HTMLButtonElement>(null);
 
   const { messages, sendMessage, status, error } = useChat({ transport: chatTransport });
@@ -130,7 +137,7 @@ export default function ChatWidget() {
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
       }
@@ -152,6 +159,13 @@ export default function ChatWidget() {
     if (!trimmed || isBusy) return;
     sendMessage({ text: trimmed });
     setInput("");
+  };
+
+  const handleInputKeyDown = (e: ReactKeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      e.currentTarget.form?.requestSubmit();
+    }
   };
 
   return (
@@ -330,17 +344,28 @@ export default function ChatWidget() {
             onSubmit={handleSubmit}
             className="border-t border-white/10 px-4 py-3"
           >
-            <div className="flex gap-2">
-              <input
+            <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <textarea
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleInputKeyDown}
                 placeholder="Ask about Qall..."
                 aria-label="Message for Qall AI"
+                aria-describedby="chat-input-help chat-input-count"
                 maxLength={500}
+                rows={2}
                 disabled={isBusy}
-                className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-dark-50 placeholder:text-white outline-none transition-colors focus:border-orange-500/50 focus:bg-white/[0.07] disabled:opacity-50"
-              />
+                className="block min-h-20 w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm leading-5 text-dark-50 placeholder:text-white outline-none transition-colors focus:border-orange-500/50 focus:bg-white/[0.07] disabled:opacity-50"
+                />
+                <div className="mt-1 flex items-center justify-between px-1 text-[11px] text-dark-400">
+                  <span id="chat-input-help">Ctrl/Cmd + Enter to send</span>
+                  <span id="chat-input-count" aria-live="polite">
+                    {input.length}/500
+                  </span>
+                </div>
+              </div>
               <button
                 type="submit"
                 disabled={isBusy || !input.trim()}
