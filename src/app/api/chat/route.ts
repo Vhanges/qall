@@ -1,6 +1,5 @@
 import { createUIMessageStream, createUIMessageStreamResponse } from "ai";
-import { headers } from "next/headers";
-import { validateInput, checkRateLimit, filterOutput } from "@/lib/chat-security";
+import { validateInput, filterOutput } from "@/lib/chat-security";
 
 const WEBHOOK_URL =
   process.env.N8N_WEBHOOK_URL ??
@@ -135,6 +134,32 @@ function planChunkSize(length: number): number {
   return Math.max(1, Math.ceil(length / chunkCount));
 }
 
+function createAssistantResponse(req: Request, replyText: string) {
+  const chunkSize = planChunkSize(replyText.length);
+
+  const stream = createUIMessageStream({
+    async execute({ writer }) {
+      writer.write({ type: "text-start", id: "assistant-response" });
+
+      for (let i = 0; i < replyText.length; i += chunkSize) {
+        if (req.signal.aborted) break;
+
+        writer.write({
+          type: "text-delta",
+          id: "assistant-response",
+          delta: replyText.slice(i, i + chunkSize),
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, CHUNK_DELAY_MS));
+      }
+
+      writer.write({ type: "text-end", id: "assistant-response" });
+    },
+  });
+
+  return createUIMessageStreamResponse({ stream });
+}
+
 export async function POST(req: Request) {
   let body: IncomingBody = {};
   try {
@@ -153,17 +178,6 @@ export async function POST(req: Request) {
     );
   }
 
-  const headersList = await headers();
-  const ip =
-    headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    headersList.get("x-real-ip") ||
-    "unknown";
-
-  const rateCheck = checkRateLimit(ip);
-  if (!rateCheck.valid) {
-    return errorResponse(rateCheck.error!, 429);
-  }
-
   const messages = body.messages ?? [];
   const lastUserMessage = [...messages]
     .reverse()
@@ -179,7 +193,11 @@ export async function POST(req: Request) {
 
   const validation = validateInput(userMessage);
   if (!validation.valid) {
-    return errorResponse(validation.error!, 400);
+    return createAssistantResponse(
+      req,
+      validation.error ??
+        "I can only help with questions about Qall and insurance CRM solutions."
+    );
   }
 
   let replyText = "";
@@ -247,27 +265,5 @@ export async function POST(req: Request) {
 
   replyText = filterOutput(replyText);
 
-  const chunkSize = planChunkSize(replyText.length);
-
-  const stream = createUIMessageStream({
-    async execute({ writer }) {
-      writer.write({ type: "text-start", id: "assistant-response" });
-
-      for (let i = 0; i < replyText.length; i += chunkSize) {
-        if (req.signal.aborted) break;
-
-        writer.write({
-          type: "text-delta",
-          id: "assistant-response",
-          delta: replyText.slice(i, i + chunkSize),
-        });
-
-        await new Promise((resolve) => setTimeout(resolve, CHUNK_DELAY_MS));
-      }
-
-      writer.write({ type: "text-end", id: "assistant-response" });
-    },
-  });
-
-  return createUIMessageStreamResponse({ stream });
+  return createAssistantResponse(req, replyText);
 }

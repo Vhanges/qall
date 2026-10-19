@@ -37,31 +37,6 @@ const SYSTEM_PROMPT_FRAGMENTS = [
   "role boundaries",
 ];
 
-interface RateLimitEntry {
-  timestamps: number[];
-  totalMessages: number;
-}
-
-// In-memory rate limit store (keyed by IP)
-const rateLimitStore = new Map<string, RateLimitEntry>();
-
-// Clean up stale entries every 10 minutes
-const CLEANUP_INTERVAL = 10 * 60 * 1000;
-let lastCleanup = Date.now();
-
-function cleanupStaleEntries() {
-  const now = Date.now();
-  if (now - lastCleanup < CLEANUP_INTERVAL) return;
-  lastCleanup = now;
-
-  const cutoff = now - 60 * 60 * 1000; // 1 hour
-  for (const [ip, entry] of rateLimitStore) {
-    if (entry.timestamps.length === 0 || entry.timestamps[entry.timestamps.length - 1] < cutoff) {
-      rateLimitStore.delete(ip);
-    }
-  }
-}
-
 export interface ValidationResult {
   valid: boolean;
   error?: string;
@@ -96,43 +71,6 @@ export function validateInput(message: string): ValidationResult {
       };
     }
   }
-
-  return { valid: true };
-}
-
-/**
- * Check rate limits for an IP address
- */
-export function checkRateLimit(ip: string): ValidationResult {
-  cleanupStaleEntries();
-
-  const now = Date.now();
-  const entry = rateLimitStore.get(ip) || { timestamps: [], totalMessages: 0 };
-
-  // Filter to timestamps within the last minute
-  const oneMinuteAgo = now - 60 * 1000;
-  entry.timestamps = entry.timestamps.filter((t) => t > oneMinuteAgo);
-
-  // Check per-minute limit (5 messages/minute)
-  if (entry.timestamps.length >= 5) {
-    return {
-      valid: false,
-      error: "You're sending messages too quickly. Please wait a moment before trying again.",
-    };
-  }
-
-  // Check session limit (20 messages total)
-  if (entry.totalMessages >= 20) {
-    return {
-      valid: false,
-      error: "You've reached the conversation limit. Please contact us at team@theqall.com or book a demo for more help.",
-    };
-  }
-
-  // Record this message
-  entry.timestamps.push(now);
-  entry.totalMessages += 1;
-  rateLimitStore.set(ip, entry);
 
   return { valid: true };
 }
