@@ -281,6 +281,30 @@ html.snap-active .snap-section {
   to { opacity: 1; }
 }
 
+@keyframes chatTypingDot {
+  0%, 18%, 100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  9% {
+    opacity: 1;
+    transform: translateY(-5px);
+  }
+}
+
+.chat-typing-dot {
+  animation: chatTypingDot 1.2s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+.chat-typing-dot:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.chat-typing-dot:nth-child(3) {
+  animation-delay: 0.8s;
+}
+
 @keyframes heroFloat {
   0%, 100% { translate: -50% -50%; }
   50% { translate: -50% calc(-50% - 14px); }
@@ -300,5 +324,10 @@ html.snap-active .snap-section {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .chat-typing-dot {
+    animation-duration: 1.2s !important;
+    animation-iteration-count: infinite !important;
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, type FormEvent } from "react";
+import { useState, useRef, useEffect, type FormEvent, type ReactNode } from "react";
 import { useChat } from "@ai-sdk/react";
 import { chatTransport } from "@/lib/ai";
 
@@ -26,11 +26,89 @@ function getFriendlyError(error: Error): string {
   return "Something went wrong. Please try again.";
 }
 
+function renderInlineText(text: string, keyPrefix: string): ReactNode[] {
+  const tokens = text.split(/(\[[^\]]+\]\(https?:\/\/[^)\s]+\)|\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g);
+
+  return tokens.map((token, index) => {
+    const key = `${keyPrefix}-${index}`;
+    const link = token.match(/^\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)$/);
+    if (link) {
+      return (
+        <a
+          key={key}
+          href={link[2]}
+          target="_blank"
+          rel="noreferrer"
+          className="text-orange-300 underline decoration-orange-300/50 underline-offset-2 hover:text-orange-200"
+        >
+          {link[1]}
+        </a>
+      );
+    }
+    if (token.startsWith("**") && token.endsWith("**")) {
+      return <strong key={key} className="font-semibold text-dark-50">{token.slice(2, -2)}</strong>;
+    }
+    if (token.startsWith("`") && token.endsWith("`")) {
+      return <code key={key} className="rounded bg-black/30 px-1 py-0.5 font-mono text-xs text-orange-200">{token.slice(1, -1)}</code>;
+    }
+    if (token.startsWith("*") && token.endsWith("*")) {
+      return <em key={key}>{token.slice(1, -1)}</em>;
+    }
+    return token;
+  });
+}
+
+function renderStyledText(text: string): ReactNode {
+  const lines = text.split("\n");
+  const blocks: ReactNode[] = [];
+  let listItems: string[] = [];
+
+  const flushList = () => {
+    if (listItems.length === 0) return;
+    blocks.push(
+      <ul key={`list-${blocks.length}`} className="my-1 list-disc space-y-1 pl-5">
+        {listItems.map((item, index) => (
+          <li key={`item-${index}`}>{renderInlineText(item, `item-${index}`)}</li>
+        ))}
+      </ul>,
+    );
+    listItems = [];
+  };
+
+  lines.forEach((line, index) => {
+    const listItem = line.match(/^\s*[-*]\s+(.+)$/);
+    if (listItem) {
+      listItems.push(listItem[1]);
+      return;
+    }
+
+    flushList();
+    if (!line.trim()) return;
+
+    const heading = line.match(/^#{1,3}\s+(.+)$/);
+    blocks.push(
+      heading ? (
+        <strong key={`line-${index}`} className="mt-1 block font-semibold text-dark-50">
+          {renderInlineText(heading[1], `line-${index}`)}
+        </strong>
+      ) : (
+        <p key={`line-${index}`} className="m-0">
+          {renderInlineText(line, `line-${index}`)}
+        </p>
+      ),
+    );
+  });
+
+  flushList();
+  return blocks;
+}
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const openButtonRef = useRef<HTMLButtonElement>(null);
 
   const { messages, sendMessage, status, error } = useChat({ transport: chatTransport });
 
@@ -44,7 +122,27 @@ export default function ChatWidget() {
   // Focus input when panel opens
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 100);
+      const focusTimeout = setTimeout(() => inputRef.current?.focus(), 100);
+      return () => clearTimeout(focusTimeout);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      openButtonRef.current?.focus();
     }
   }, [isOpen]);
 
@@ -61,6 +159,7 @@ export default function ChatWidget() {
       {/* Chat Bubble */}
       {!isOpen && (
         <button
+          ref={openButtonRef}
           onClick={() => setIsOpen(true)}
           className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg transition-all duration-300 hover:bg-orange-400 hover:scale-105 cursor-pointer"
           aria-label="Open chat"
@@ -86,6 +185,9 @@ export default function ChatWidget() {
       {/* Chat Panel */}
       {isOpen && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="chat-title"
           className="fixed bottom-0 right-0 z-50 flex flex-col sm:bottom-6 sm:right-6 sm:h-[520px] sm:w-[380px] sm:rounded-2xl h-full w-full rounded-none overflow-hidden shadow-2xl border border-white/10"
           style={{
             background: "rgba(10, 14, 23, 0.97)",
@@ -99,7 +201,7 @@ export default function ChatWidget() {
                 <div className="h-2.5 w-2.5 rounded-full bg-orange-500" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-dark-50 font-heading">
+                <h3 id="chat-title" className="text-sm font-semibold text-dark-50 font-heading">
                   Chat with Chuck
                 </h3>
                 <p className="text-xs text-white">
@@ -132,6 +234,10 @@ export default function ChatWidget() {
           <div
             className="flex-1 overflow-y-auto px-4 py-4 space-y-3"
             data-lenis-prevent
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions text"
+            aria-busy={isBusy}
           >
             {/* Welcome message */}
             {messages.length === 0 && (
@@ -166,30 +272,33 @@ export default function ChatWidget() {
                       : "rounded-tl-sm bg-white/5 text-dark-200"
                   }`}
                 >
-                  {getMessageText(message)}
+                  {message.role === "assistant"
+                    ? renderStyledText(getMessageText(message))
+                    : getMessageText(message)}
                 </div>
               </div>
             ))}
 
             {/* Streaming indicator */}
-            {status === "submitted" && (
+            {isBusy && (
               <div className="flex gap-2.5">
                 <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-500/20">
                   <div className="h-1.5 w-1.5 rounded-full bg-orange-500" />
                 </div>
-                <div className="rounded-xl rounded-tl-sm bg-white/5 px-3.5 py-2.5">
+                <div
+                  className="rounded-xl rounded-tl-sm bg-white/5 px-3.5 py-2.5"
+                  role="status"
+                  aria-label="Chuck is typing"
+                >
                   <div className="flex gap-1">
                     <span
-                      className="h-1.5 w-1.5 rounded-full bg-dark-400 animate-bounce"
-                      style={{ animationDelay: "0ms" }}
+                      className="chat-typing-dot h-1.5 w-1.5 rounded-full bg-dark-400"
                     />
                     <span
-                      className="h-1.5 w-1.5 rounded-full bg-dark-400 animate-bounce"
-                      style={{ animationDelay: "150ms" }}
+                      className="chat-typing-dot h-1.5 w-1.5 rounded-full bg-dark-400"
                     />
                     <span
-                      className="h-1.5 w-1.5 rounded-full bg-dark-400 animate-bounce"
-                      style={{ animationDelay: "300ms" }}
+                      className="chat-typing-dot h-1.5 w-1.5 rounded-full bg-dark-400"
                     />
                   </div>
                 </div>
@@ -202,7 +311,10 @@ export default function ChatWidget() {
                 <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500/20">
                   <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
                 </div>
-                <div className="rounded-xl rounded-tl-sm bg-red-500/10 px-3.5 py-2.5 text-sm text-red-300 max-w-[85%]">
+                <div
+                  className="rounded-xl rounded-tl-sm bg-red-500/10 px-3.5 py-2.5 text-sm text-red-300 max-w-[85%]"
+                  role="alert"
+                >
                   {getFriendlyError(error)}
                 </div>
               </div>
@@ -222,6 +334,7 @@ export default function ChatWidget() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about Qall..."
+                aria-label="Message for Chuck"
                 maxLength={500}
                 disabled={isBusy}
                 className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-dark-50 placeholder:text-white outline-none transition-colors focus:border-orange-500/50 focus:bg-white/[0.07] disabled:opacity-50"
